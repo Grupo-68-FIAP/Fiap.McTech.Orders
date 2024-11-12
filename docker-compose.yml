@@ -1,0 +1,15 @@
+services:
+  fiap.mctech.api:
+    depends_on:
+      - sqlserver
+    image: ${DOCKER_REGISTRY-}mctech/api
+    build:
+      context: .
+      dockerfile: src/Fiap.McTech.Api/Dockerfile
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
