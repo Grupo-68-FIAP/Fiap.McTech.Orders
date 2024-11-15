@@ -1,0 +1,35 @@
+name: .NET
+
+on:
+  push:
+    branches: [ "master", "develop" ]
+    paths-ignore: [ '**/*.md', '.github/workflows/*', '!.github/workflows/dotnet.yml', '**/sonar-project.*']
+  pull_request:
+    branches: [ "*" ]
+    paths-ignore: [ '**/*.md', '.github/workflows/*', '!.github/workflows/dotnet.yml', '**/sonar-project.*']
+    types: [ opened, synchronize, reopened ]
+
+env:
+  SOLUTION_NAME: Fiap.McTech.Orders.sln
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore "${{ env.SOLUTION_NAME }}"
+
+    - name: Build
+      run: dotnet build "${{ env.SOLUTION_NAME }}" --configuration Release
+
+    - name: Test
+      run: dotnet test "${{ env.SOLUTION_NAME }}" --verbosity normal
+      
