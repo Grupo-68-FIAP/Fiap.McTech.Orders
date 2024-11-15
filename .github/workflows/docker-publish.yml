@@ -7,6 +7,12 @@ on:
     workflows: [ .NET ]
     types: [ completed ]
     branches: [ master, develop ]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run the workflow'
+        required: true
+        default: 'master'
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -28,6 +34,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
