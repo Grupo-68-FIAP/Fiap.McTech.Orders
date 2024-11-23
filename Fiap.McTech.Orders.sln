@@ -7,19 +7,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CCEE2158-CE5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DDC145A6-0C2F-411D-BE57-37A151F79569}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\WebApi\WebApi.csproj", "{5897D023-63C0-44CB-A93A-AF873BF656C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "src\WebApi\WebApi.csproj", "{5897D023-63C0-44CB-A93A-AF873BF656C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{A64EF2C9-8E54-41A3-A5D5-B0A2FB5133A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "src\Application\Application.csproj", "{A64EF2C9-8E54-41A3-A5D5-B0A2FB5133A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Ioc", "src\CrossCutting.Ioc\CrossCutting.Ioc.csproj", "{372DB163-6253-4FEF-A65C-C3CFEEB5EE6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Ioc", "src\CrossCutting.Ioc\CrossCutting.Ioc.csproj", "{372DB163-6253-4FEF-A65C-C3CFEEB5EE6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain.csproj", "{78333276-0AF0-4C28-A14E-C3440EEF1F27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{78333276-0AF0-4C28-A14E-C3440EEF1F27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra", "src\Infra\Infra.csproj", "{AEF3A340-DF50-438B-A974-5EE7F5CCD228}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra", "src\Infra\Infra.csproj", "{AEF3A340-DF50-438B-A974-5EE7F5CCD228}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "tests\UnitTests\UnitTests.csproj", "{347814C8-52A8-4095-98C5-CBA5B8F3C603}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "tests\UnitTests\UnitTests.csproj", "{347814C8-52A8-4095-98C5-CBA5B8F3C603}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalTests", "tests\FunctionalTests\FunctionalTests.csproj", "{12A73DB5-F555-4520-8823-E4300A3CBC49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "tests\FunctionalTests\FunctionalTests.csproj", "{12A73DB5-F555-4520-8823-E4300A3CBC49}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalServices", "src\ExternalServices\ExternalServices.csproj", "{14043D91-FBC5-4A54-AAF8-8372B7270801}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{12A73DB5-F555-4520-8823-E4300A3CBC49}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12A73DB5-F555-4520-8823-E4300A3CBC49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12A73DB5-F555-4520-8823-E4300A3CBC49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14043D91-FBC5-4A54-AAF8-8372B7270801}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14043D91-FBC5-4A54-AAF8-8372B7270801}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14043D91-FBC5-4A54-AAF8-8372B7270801}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14043D91-FBC5-4A54-AAF8-8372B7270801}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{AEF3A340-DF50-438B-A974-5EE7F5CCD228} = {CCEE2158-CE58-4F87-B35A-70E064DC5958}
 		{347814C8-52A8-4095-98C5-CBA5B8F3C603} = {DDC145A6-0C2F-411D-BE57-37A151F79569}
 		{12A73DB5-F555-4520-8823-E4300A3CBC49} = {DDC145A6-0C2F-411D-BE57-37A151F79569}
+		{14043D91-FBC5-4A54-AAF8-8372B7270801} = {CCEE2158-CE58-4F87-B35A-70E064DC5958}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D7C4EEF7-DF62-414A-BCC1-A84FD6576B83}

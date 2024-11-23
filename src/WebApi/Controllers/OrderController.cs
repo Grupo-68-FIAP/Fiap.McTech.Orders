@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Orders;
+﻿using Application.Dtos.Create;
+using Application.Dtos.Orders;
 using Application.Interfaces;
 using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -96,13 +97,28 @@ namespace WebApi.Controllers
         /// <response code="201">Returns the newly created order.</response>
         /// <response code="400">Indicates that there were validation issues with the provided data.</response>
         /// <response code="404">Indicates that the cart with the specified ID does not exist.</response>
-        [HttpPost("{cartId}")]
+        [HttpPost]
         [ProducesResponseType(typeof(OrderOutputDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> CreateOrder(Guid cartId)
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequestDto request)
         {
-            var createdOrder = await _orderAppService.CreateOrderByCartAsync(cartId);
+            if (request == null || !ModelState.IsValid)
+            {
+                return BadRequest("Invalid request data.");
+            }
+
+            if (request.CartId == Guid.Empty)
+            {
+                return BadRequest("CartId must be provided.");
+            }
+
+            var createdOrder = await _orderAppService.CreateOrderByCartAsync(request);
+            if (createdOrder == null)
+            {
+                return NotFound("Order could not be created.");
+            }
+
             return CreatedAtAction(nameof(GetOrderById), new { id = createdOrder.Id }, createdOrder);
         }
 
