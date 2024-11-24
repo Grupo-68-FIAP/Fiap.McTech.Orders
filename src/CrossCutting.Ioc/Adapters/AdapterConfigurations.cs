@@ -2,6 +2,10 @@
 using ExternalServices.Adapters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http;
+using Polly;
+using Polly.Extensions.Http;
+using Polly.Timeout;
 
 namespace CrossCutting.Ioc.Adapters
 {
@@ -9,17 +13,52 @@ namespace CrossCutting.Ioc.Adapters
     {
         public static void AddAdapterServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var cartService= configuration.GetSection("CartService:BaseUrl");
-            services.AddHttpClient<ICartAdapter, CartAdapter>(client =>
-            {
-                client.BaseAddress = new Uri(cartService.Value); 
-            });
+            var cartServiceBaseUrl = GetBaseUrlFromConfiguration(configuration, "CartService:BaseUrl");
+            var paymentServiceBaseUrl = GetBaseUrlFromConfiguration(configuration, "PaymentService:BaseUrl");
 
-            var paymentService = configuration.GetSection("PaymentService:BaseUrl");
-            services.AddHttpClient<IPaymentAdapter, PaymentAdapter>(client =>
+            ConfigureHttpClientWithPolicies<ICartAdapter, CartAdapter>(services, cartServiceBaseUrl);
+            ConfigureHttpClientWithPolicies<IPaymentAdapter, PaymentAdapter>(services, paymentServiceBaseUrl);
+        }
+
+        private static void ConfigureHttpClientWithPolicies<TInterface, TImplementation>(
+            IServiceCollection services, string baseUrl)
+            where TInterface : class
+            where TImplementation : class, TInterface
+        {
+            if (string.IsNullOrWhiteSpace(baseUrl))
+                throw new ArgumentException("The base URL for the HTTP client cannot be null or empty.", nameof(baseUrl));
+
+            services.AddHttpClient<TInterface, TImplementation>(client =>
             {
-                client.BaseAddress = new Uri(paymentService.Value); 
-            });
+                client.BaseAddress = new Uri(baseUrl);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler())
+            .AddHttpMessageHandler(() => new PolicyHttpMessageHandler(GetRetryPolicy()))
+            .AddHttpMessageHandler(() => new PolicyHttpMessageHandler(GetTimeoutPolicy()));
+        }
+
+        private static string GetBaseUrlFromConfiguration(IConfiguration configuration, string sectionKey)
+        {
+            var baseUrl = configuration[sectionKey];
+            if (string.IsNullOrWhiteSpace(baseUrl))
+                throw new ArgumentException($"Configuration for '{sectionKey}' is missing or empty.");
+            return baseUrl;
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+        {
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .Or<TimeoutRejectedException>()
+                .WaitAndRetryAsync(
+                    3,
+                    retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt))
+                );
+        }
+
+        private static IAsyncPolicy<HttpResponseMessage> GetTimeoutPolicy()
+        {
+            return Policy.TimeoutAsync<HttpResponseMessage>(10);
         }
     }
 }
