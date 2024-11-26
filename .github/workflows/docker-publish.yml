@@ -1,24 +1,18 @@
 name: Container Publish
 
 on:
-  schedule:
-    - cron: '27 19 * * *'
   workflow_run:
     workflows: [ .NET ]
     types: [ completed ]
     branches: [ master, develop ]
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to run the workflow'
-        required: true
-        default: 'master'
 
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: Grupo-68-FIAP/mctech/order
+  BRANCH: ${{ github.event.workflow_run.head_branch || github.ref_name || github.ref }}
 
 jobs:
 
@@ -35,7 +29,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch || github.head_ref || github.ref }}
+          ref: ${{ env.BRANCH }}
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -72,8 +66,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
-            type=raw,value=dev,enable=${{ github.ref == format('refs/heads/{0}', 'develop') }}
+            type=raw,value=latest,enable=${{ env.BRANCH == 'master' }}
+            type=raw,value=dev,enable=${{ env.BRANCH == 'develop' }}
             type=ref,event=tag
 
       # Build and push Docker image with Buildx (don't push on PR)
