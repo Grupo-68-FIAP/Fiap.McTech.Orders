@@ -4,7 +4,8 @@
       "commandName": "DockerCompose",
       "commandVersion": "1.0",
       "serviceActions": {
-        "fiap.mctech.api": "StartDebugging"
+        "fiap.mctech.api": "StartDebugging",
+        "webapi": "StartDebugging"
       }
     }
   }
