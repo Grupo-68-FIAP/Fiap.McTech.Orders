@@ -106,22 +106,22 @@ namespace AppServices.Orders
 
         public async Task<List<OrderOutputDto>> GetOrderByStatusAsync(OrderStatus status)
         {
-            _logger.LogInformation("Retrieving orders with status {Status}.", status.ToString());
+            _logger.LogInformation("Retrieving orders with status {Status}.", status.ToString().Replace(Environment.NewLine, ""));
 
             if (!Enum.IsDefined(typeof(OrderStatus), status))
             {
-                _logger.LogWarning("Invalid order status provided: {Status}.", status);
+                _logger.LogWarning("Invalid order status provided: {Status}.", status.ToString().Replace(Environment.NewLine, ""));
                 throw new ArgumentException("Invalid order status.", nameof(status));
             }
 
             var orders = await _orderRepository.GetOrderByStatusAsync(status);
             if (!orders.Any())
             {
-                _logger.LogInformation("No orders found with status {Status}.", status.ToString());
+                _logger.LogInformation("No orders found with status {Status}.", status.ToString().Replace(Environment.NewLine, ""));
                 return new List<OrderOutputDto>();
             }
 
-            _logger.LogInformation("Orders with status {Status} retrieved successfully.", status.ToString());
+            _logger.LogInformation("Orders with status {Status} retrieved successfully.", status.ToString().Replace(Environment.NewLine, ""));
 
             return _mapper.Map<List<OrderOutputDto>>(orders);
         }
