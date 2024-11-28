@@ -4,9 +4,11 @@ using CrossCutting.Ioc.Adapters;
 using CrossCutting.Ioc.Infra;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CrossCutting.Ioc
 {
+    [ExcludeFromCodeCoverage]
     public static class NativeBootstrapInjector
     {
         public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)

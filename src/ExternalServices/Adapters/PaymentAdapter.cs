@@ -33,7 +33,7 @@ namespace ExternalServices.Adapters
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogError("Failed to move order with ID {OrderId} to next payment status. Status code: {StatusCode}.", orderId, response.StatusCode);
-                    throw new Exception($"Failed to move order with ID {orderId} to next payment status. Status code: {response.StatusCode}");
+                    throw new HttpRequestException($"Failed to move order with ID {orderId} to next payment status. Status code: {response.StatusCode}");
                 }
 
                 _logger.LogInformation("Order with ID {OrderId} moved to next payment status successfully.", orderId);
@@ -43,12 +43,12 @@ namespace ExternalServices.Adapters
             catch (HttpRequestException httpEx)
             {
                 _logger.LogError(httpEx, "Error while communicating with the payment service for order ID {OrderId}.", orderId);
-                throw new ApplicationException("An error occurred while contacting the payment service.", httpEx);
+                throw;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error while processing order ID {OrderId} for payment status change.", orderId);
-                throw new ApplicationException("An unexpected error occurred while processing the payment status change.", ex);
+                throw ;
             }
         }
     }

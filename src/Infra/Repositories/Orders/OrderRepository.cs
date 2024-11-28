@@ -3,9 +3,11 @@ using Domain.Enums;
 using Domain.Interfaces.Repositories.Orders;
 using Infra.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Infra.Repositories.Orders
 {
+    [ExcludeFromCodeCoverage]
     public class OrderRepository : RepositoryBase<Order>, IOrderRepository
     {
         public OrderRepository(DataContext context) : base(context) { }

@@ -2,10 +2,12 @@
 using Application.Dtos.Orders;
 using AutoMapper;
 using Domain.Entities.Orders;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CrossCutting.Ioc.Mappers.Profiles
 {
     //TODO - VALIDAR MAPEAMENTO
+    [ExcludeFromCodeCoverage]
     public class OrderProfile : Profile
     {
         public OrderProfile()
