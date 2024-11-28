@@ -6,9 +6,11 @@ using Microsoft.Extensions.Http;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Timeout;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CrossCutting.Ioc.Adapters
 {
+    [ExcludeFromCodeCoverage]
     public static class AdapterConfigurations
     {
         public static void AddAdapterServices(this IServiceCollection services, IConfiguration configuration)

@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 
 namespace AppServices.Orders
 {
-    //TODO - VALIDAR
     public class OrderAppService : IOrderAppService
     {
         private readonly ILogger<OrderAppService> _logger;
@@ -137,6 +136,7 @@ namespace AppServices.Orders
 
             _logger.LogInformation("Attempting to move order with ID {OrderId} to next status.", id);
 
+
             var originalOrder = await _orderRepository.GetByIdAsync(id)
                 ?? throw new EntityNotFoundException($"Order with ID {id} not found. Update aborted.");
 
@@ -162,7 +162,7 @@ namespace AppServices.Orders
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error moving order with ID {OrderId} to next status.", id);
-                throw new ApplicationException("An error occurred while moving the order to the next status.", ex);
+                throw;
             }
         }
 

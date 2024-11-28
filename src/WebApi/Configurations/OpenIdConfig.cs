@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WebApi.Configurations
 {
     /// <summary>
     /// OpenId configuration class.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class OpenIdConfig
     {
         /// <summary>

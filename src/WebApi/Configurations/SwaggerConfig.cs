@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace WebApi.Configurations
@@ -6,7 +7,8 @@ namespace WebApi.Configurations
     /// <summary>
     /// Swagger configuration class.
     /// </summary>
-    internal static class SwaggerConfig
+    [ExcludeFromCodeCoverage]
+    public static class SwaggerConfig
     {
         /// <summary>
         /// Add Swagger configuration to the application.

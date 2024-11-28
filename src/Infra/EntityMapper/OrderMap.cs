@@ -2,9 +2,11 @@
 using Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Infra.EntityMapper
 {
+    [ExcludeFromCodeCoverage]
     internal class OrderMap : IEntityTypeConfiguration<Order>
     {
         public void Configure(EntityTypeBuilder<Order> builder)
