@@ -107,7 +107,7 @@ namespace UnitTests.Adapters
                 .ThrowsAsync(new Exception("An unexpected error occurred while processing the payment status change"));
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<HttpRequestException>(() => _paymentAdapter.MoveOrderToNextStatus(orderId));
+            var exception = await Assert.ThrowsAsync<Exception>(() => _paymentAdapter.MoveOrderToNextStatus(orderId));
             Assert.Contains("An unexpected error occurred while processing the payment status change", exception.Message);
         }
     }
