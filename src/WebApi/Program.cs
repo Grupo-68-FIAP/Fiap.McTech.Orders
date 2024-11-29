@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddJwtBearerAuthentication();
+builder.Services.AddJwtBearerAuthentication();
 builder.Services.AddSwagger();
 
 // AutoMapper configuration
@@ -23,7 +23,6 @@ builder.Services.AddCors(options =>
     var allowOrigins = builder.Configuration.GetValue<string>("ALLOW_ORIGINS") ?? "*";
     options.AddPolicy("CorsConfig", builder => builder.WithOrigins(allowOrigins.Split(';')).AllowAnyMethod().AllowAnyHeader());
 });
-
 
 var app = builder.Build();
 

@@ -15,8 +15,11 @@ namespace CrossCutting.Ioc.Adapters
     {
         public static void AddAdapterServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var cartServiceBaseUrl = GetBaseUrlFromConfiguration(configuration, "CartService:BaseUrl");
-            var paymentServiceBaseUrl = GetBaseUrlFromConfiguration(configuration, "PaymentService:BaseUrl");
+            var cartServiceBaseUrl = Environment.GetEnvironmentVariable("MCTECH_CART_SERVICE") 
+                ?? GetBaseUrlFromConfiguration(configuration, "CartService:BaseUrl");
+
+            var paymentServiceBaseUrl = Environment.GetEnvironmentVariable("MCTECH_PAYMENT_SERVICE") 
+                ?? GetBaseUrlFromConfiguration(configuration, "PaymentService:BaseUrl");
 
             ConfigureHttpClientWithPolicies<ICartAdapter, CartAdapter>(services, cartServiceBaseUrl);
             ConfigureHttpClientWithPolicies<IPaymentAdapter, PaymentAdapter>(services, paymentServiceBaseUrl);
