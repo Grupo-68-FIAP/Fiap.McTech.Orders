@@ -350,5 +350,71 @@ namespace AppServices.UnitTests
             Assert.Equal(orderDto.Id, result.Id);
             _cartAdapterMock.Verify(adapter => adapter.DeleteCartByIdAsync(request.CartId), Times.Once);
         }
+
+        [Fact]
+        public async Task GetCurrrentOrders_WhenOrdersExist_ShouldReturnMappedOrders()
+        {
+            // Arrange
+            var orders = new List<Order>
+            {
+                new Order(Guid.NewGuid(), 150m),
+                new Order(Guid.NewGuid(), 200m)
+            };
+
+                    var orderDtos = new List<OrderOutputDto>
+            {
+                new OrderOutputDto { Id = orders[0].Id },
+                new OrderOutputDto { Id = orders[1].Id }
+            };
+
+            _orderRepositoryMock
+                .Setup(repo => repo.GetCurrrentOrders())
+                .ReturnsAsync(orders);
+
+            _mapperMock
+                .Setup(mapper => mapper.Map<List<OrderOutputDto>>(orders))
+                .Returns(orderDtos);
+
+            // Act
+            var result = await _orderAppService.GetCurrrentOrders();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Equal(orders.Count, result.Count);
+            Assert.Equal(orders[0].Id, result[0].Id);
+            Assert.Equal(orders[1].Id, result[1].Id); 
+        }
+
+        [Fact]
+        public async Task GetCurrrentOrders_WhenNoOrdersExist_ShouldReturnEmptyList()
+        {
+            // Arrange
+            _orderRepositoryMock.Setup(repo => repo.GetCurrrentOrders())
+                .ReturnsAsync(new List<Order>());
+
+            // Act
+            var result = await _orderAppService.GetCurrrentOrders();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public async Task GetCurrrentOrders_WhenRepositoryReturnsNull_ShouldReturnEmptyList()
+        {
+            // Arrange
+            _orderRepositoryMock
+                .Setup(repo => repo.GetCurrrentOrders())
+                .ReturnsAsync((List<Order>?) null);
+
+            // Act
+            var result = await _orderAppService.GetCurrrentOrders();
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
     }
 }
