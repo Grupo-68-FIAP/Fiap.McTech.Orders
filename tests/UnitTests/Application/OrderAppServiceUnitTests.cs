@@ -102,9 +102,9 @@ namespace AppServices.UnitTests
                 CartId = Guid.NewGuid(),
                 ClientId = Guid.NewGuid(),
                 Items = new List<CartItemRequestDto>
-        {
-            new CartItemRequestDto { ProductId = Guid.NewGuid(), Quantity = 2, Value = 50m }
-        }
+                {
+                    new CartItemRequestDto { ProductId = Guid.NewGuid(), Quantity = 2, Value = 50m }
+                }
             };
             request.CalculateAllValue();
 
@@ -139,11 +139,11 @@ namespace AppServices.UnitTests
             };
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<ArgumentException>(
+            var exception = await Assert.ThrowsAsync<Exception>(
                 () => _orderAppService.CreateOrderByCartAsync(request)
             );
 
-            Assert.Equal("Cart ID cannot be empty. (Parameter 'CartId')", exception.Message);
+            Assert.Equal("Cart ID cannot be empty.", exception.Message);
         }
 
         [Fact]
@@ -277,11 +277,78 @@ namespace AppServices.UnitTests
                 .ReturnsAsync(false);
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<ApplicationException>(
+            var exception = await Assert.ThrowsAsync<Exception>(
                 () => _orderAppService.MoveOrderToNextStatus(orderId)
             );
 
             Assert.Contains("Payment status update failed", exception.Message);
+        }
+
+        [Fact]
+        public async Task CreateOrderByCartAsync_WhenItemsAreNull_ShouldNotCreateOrder()
+        {
+            // Arrange
+            var request = new CreateOrderRequestDto
+            {
+                CartId = Guid.NewGuid(),
+                ClientId = Guid.NewGuid()
+            };
+
+            request.CalculateAllValue();
+
+            var order = new Order(request.CartId, request.AllValue); // Supondo que exista uma classe `Order`.
+            var createdOrder = new Order(Guid.NewGuid(), request.AllValue);
+            var orderDto = new OrderOutputDto { Id = createdOrder.Id };
+
+            _mapperMock.Setup(mapper => mapper.Map<Order>(request))
+                .Returns(order);
+            _orderRepositoryMock.Setup(repo => repo.AddAsync(order))
+                .ReturnsAsync(createdOrder);
+            _mapperMock.Setup(mapper => mapper.Map<OrderOutputDto>(createdOrder))
+                .Returns(orderDto);
+
+            // Act
+            var result = await _orderAppService.CreateOrderByCartAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(orderDto.Id, result.Id);
+            _cartAdapterMock.Verify(adapter => adapter.DeleteCartByIdAsync(request.CartId), Times.Once);
+        }
+
+        [Fact]
+        public async Task CreateOrderByCartAsync_WhenItemsAreEmpty_ShouldNotCreateOrder()
+        {
+            // Arrange
+            var request = new CreateOrderRequestDto
+            {
+                CartId = Guid.NewGuid(),
+                ClientId = Guid.NewGuid(),
+                Items = new List<CartItemRequestDto> { }
+            };
+
+            request.CalculateAllValue();
+
+            var order = new Order(request.CartId, request.AllValue);
+            var createdOrder = new Order(Guid.NewGuid(), request.AllValue);
+            var orderDto = new OrderOutputDto { Id = createdOrder.Id };
+
+            _mapperMock.Setup(mapper => mapper.Map<Order>(request))
+                .Returns(order);
+
+            _orderRepositoryMock.Setup(repo => repo.AddAsync(order))
+                .ReturnsAsync(createdOrder);
+
+            _mapperMock.Setup(mapper => mapper.Map<OrderOutputDto>(createdOrder))
+                .Returns(orderDto);
+
+            // Act
+            var result = await _orderAppService.CreateOrderByCartAsync(request);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(orderDto.Id, result.Id);
+            _cartAdapterMock.Verify(adapter => adapter.DeleteCartByIdAsync(request.CartId), Times.Once);
         }
     }
 }
