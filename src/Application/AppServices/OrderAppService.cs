@@ -34,7 +34,7 @@ namespace AppServices.Orders
             _logger = logger;
         }
 
-        public async Task<OrderOutputDto?> GetOrderByIdAsync(Guid id)
+        public async Task<OrderOutputDto> GetOrderByIdAsync(Guid id)
         {
             _logger.LogInformation("Retrieving order with ID {OrderId}.", id);
 

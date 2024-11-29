@@ -1,5 +1,5 @@
 services:
-  fiap.mctech.api:
+  fiap.mctech.api.order:
     container_name: mctech_order_api
     environment:
       ASPNETCORE_ENVIRONMENT: Development

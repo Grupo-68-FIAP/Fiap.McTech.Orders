@@ -6,7 +6,7 @@ namespace Application.Dtos.Orders
     {
 		public Guid Id { get; set; }
 		public Guid? ClientId { get; set; }
-		public string? ClientName { get; set; }
+		public string ClientName { get; set; }
 		public decimal TotalAmount { get; set; }
 		public OrderStatus Status { get; set; }
 		public List<Item> Items { get; set; } = new();
