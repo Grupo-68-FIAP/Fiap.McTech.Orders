@@ -9,7 +9,7 @@
         "type": "coreclr",
         "request": "launch",
         "preLaunchTask": "build-api",
-        "program": "${workspaceFolder}/src/WebApi/bin/Debug/net8.0/WebApi.dll",
+        "program": "${workspaceFolder}/src/WebApi/bin/Debug/net6.0/WebApi.dll",
         "args": [],
         "cwd": "${workspaceFolder}/src/WebApi",
         "stopAtEntry": false,
@@ -31,6 +31,14 @@
         },
         "env": {
           "ASPNETCORE_ENVIRONMENT": "Development",
+          "SA_PASSWORD":"pws4mctech!",
+          "OPENID_AUTHORITY":"http://keycloak:8080/realms/McTech",
+          "OPENID_AUDIENCE":"mctech-api",
+          "KEYCLOAK_ADMIN":"admin",
+          "KEYCLOAK_ADMIN_PASSWORD":"admin",
+          "MCTECH_CART_SERVICE":"",
+          "MCTECH_PAYMENT_SERVICE":"",
+          "CONNECTION_STRING":"Server=localhost;Database=mctech_order;Integrated Security=True;"
         },
         "sourceFileMap": {
           "/Views": "${workspaceFolder}/Views"
