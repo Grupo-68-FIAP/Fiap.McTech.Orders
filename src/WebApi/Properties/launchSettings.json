@@ -5,7 +5,13 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "CONNECTION_STRING": "Server=localhost,1433;Initial Catalog=mctech_order;User Id=sa;Password=pws4mctech!;TrustServerCertificate=true;",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SA_PASSWORD": "pws4mctech!",
+        "OPENID_AUTHORITY": "http//keycloak:8080/realms/McTech",
+        "OPENID_AUDIENCE": "mctech-api",
+        "KEYCLOAK_ADMIN": "admin",
+        "KEYCLOAK_ADMIN_PASSWORD": "admin"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7174;http://localhost:5107"
@@ -37,5 +43,15 @@
       "applicationUrl": "http://localhost:19533",
       "sslPort": 44374
     }
+  },
+  "Container (Dockerfile)": {
+    "commandName": "Docker",
+    "launchBrowser": true,
+    "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+    "environmentVariables": {
+      "ASPNETCORE_URLS": "https://+:443;http://+:80"
+    },
+    "publishAllPorts": true,
+    "useSSL": true
   }
 }
