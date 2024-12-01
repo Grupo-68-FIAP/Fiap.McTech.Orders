@@ -11,12 +11,15 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/WebApi/WebApi.csproj", "src/WebApi/"]
-COPY ["src/Application/Application.csproj", "src/Application/"]
-COPY ["src/Domain/Domain.csproj", "src/Domain/"]
-RUN dotnet restore "./src/WebApi/WebApi.csproj"
+COPY ["src/WebApi", "WebApi"]
+COPY ["src/Application", "Application"]
+COPY ["src/CrossCutting.Ioc", "CrossCutting.Ioc"]
+COPY ["src/ExternalServices", "ExternalServices"]
+COPY ["src/Infra", "Infra"]
+COPY ["src/Domain", "Domain"]
+RUN dotnet restore "./WebApi/WebApi.csproj"
 COPY . .
-WORKDIR "/src/src/WebApi"
+WORKDIR "/src/WebApi"
 RUN dotnet build "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Esta fase é usada para publicar o projeto de serviço a ser copiado para a fase final

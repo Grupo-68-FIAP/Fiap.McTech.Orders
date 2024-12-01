@@ -38,12 +38,12 @@ namespace Infra.Repositories
             return obj;
         }
 
-        public TEntity? GetById(Guid id)
+        public TEntity GetById(Guid id)
         {
             return _dbSet.Find(id);
         }
 
-        public virtual async Task<TEntity?> GetByIdAsync(Guid id)
+        public virtual async Task<TEntity> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }

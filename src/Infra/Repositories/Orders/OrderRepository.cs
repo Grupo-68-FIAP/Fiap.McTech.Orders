@@ -12,7 +12,7 @@ namespace Infra.Repositories.Orders
     {
         public OrderRepository(DataContext context) : base(context) { }
 
-        public async Task<Order?> GetOrderByIdAsync(Guid id)
+        public async Task<Order> GetOrderByIdAsync(Guid id)
         {
             return await _dbSet
                 .Include(o => o.Items)

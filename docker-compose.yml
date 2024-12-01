@@ -1,9 +1,9 @@
 services:
-  fiap.mctech.api:
+  fiap.mctech.api.order:
     depends_on:
       - sqlserver
       - keycloak
-    image: ${DOCKER_REGISTRY-}mctech/cart-api
+    image: ${DOCKER_REGISTRY-}mctech/orders-api
     build:
       context: .
       dockerfile: src/WebApi/Dockerfile

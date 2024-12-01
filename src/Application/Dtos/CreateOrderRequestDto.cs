@@ -21,7 +21,7 @@
 
     public class CartItemRequestDto
     {
-        public string? Name { get; set; }
+        public string Name { get; set; }
         public int Quantity { get; set; } = 0;
         public decimal Value { get; set; } = 0;
         public Guid ProductId { get; set; }

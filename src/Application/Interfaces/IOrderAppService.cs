@@ -6,7 +6,7 @@ namespace Application.Interfaces
 {
     public interface IOrderAppService
     {
-        Task<OrderOutputDto?> GetOrderByIdAsync(Guid id);
+        Task<OrderOutputDto> GetOrderByIdAsync(Guid id);
         Task<List<OrderOutputDto>> GetOrderByStatusAsync(OrderStatus status);
         Task<OrderOutputDto> CreateOrderByCartAsync(CreateOrderRequestDto request);
         Task DeleteOrderAsync(Guid orderId);
