@@ -61,8 +61,9 @@ namespace AppServices.Orders
             if (request.CartId == Guid.Empty)
             {
                 _logger.LogWarning("Invalid Cart ID provided: {CartId}.", request.CartId);
-                throw new Exception("Cart ID cannot be empty.");
+                throw new InvalidCartIdException("Cart ID cannot be empty."); 
             }
+
 
             _logger.LogInformation("Creating order for cart with ID {CartId}.", request.CartId);
 
@@ -79,7 +80,7 @@ namespace AppServices.Orders
 
                 return _mapper.Map<OrderOutputDto>(createdOrder);
             }
-            catch (Exception ex)
+            catch (InvalidCartIdException ex)
             {
                 _logger.LogError(ex, "Error creating order for cart with ID {CartId}.", request.CartId);
                 throw;
@@ -151,7 +152,7 @@ namespace AppServices.Orders
                 if (!paymentStatusUpdate)
                 {
                     _logger.LogWarning("Failed to update payment status for order ID {OrderId}.", id);
-                    throw new Exception($"Payment status update failed for order ID {id}. Status transition incomplete.");
+                    throw new PaymentStatusUpdateException($"Payment status update failed for order ID {id}. Status transition incomplete.");
                 }
 
                 var updatedOrder = await _orderRepository.GetOrderByIdAsync(id);
@@ -159,7 +160,7 @@ namespace AppServices.Orders
 
                 return _mapper.Map<OrderOutputDto>(updatedOrder);
             }
-            catch (Exception ex)
+            catch (PaymentStatusUpdateException ex)
             {
                 _logger.LogError(ex, "Error moving order with ID {OrderId} to next status.", id);
                 throw;
