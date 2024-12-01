@@ -139,7 +139,7 @@ namespace AppServices.UnitTests
             };
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(
+            var exception = await Assert.ThrowsAsync<InvalidCartIdException>(
                 () => _orderAppService.CreateOrderByCartAsync(request)
             );
 
@@ -277,7 +277,7 @@ namespace AppServices.UnitTests
                 .ReturnsAsync(false);
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(
+            var exception = await Assert.ThrowsAsync<PaymentStatusUpdateException>(
                 () => _orderAppService.MoveOrderToNextStatus(orderId)
             );
 

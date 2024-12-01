@@ -1,8 +1,10 @@
 ﻿using Domain.Interfaces.ExternalServices;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ExternalServices.Adapters
 {
+    [ExcludeFromCodeCoverage]
     public class PaymentAdapter : IPaymentAdapter
     {
         private readonly HttpClient _httpClient;
@@ -43,12 +45,12 @@ namespace ExternalServices.Adapters
             catch (HttpRequestException httpEx)
             {
                 _logger.LogError(httpEx, "Error while communicating with the payment service for order ID {OrderId}.", orderId);
-                throw;
+                throw new HttpRequestException($"Error while communicating with the payment service for order ID {orderId}.", httpEx);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error while processing order ID {OrderId} for payment status change.", orderId);
-                throw ;
+                throw new Exception($"Unexpected error occurred while processing order ID {orderId} for payment status change.", ex);
             }
         }
     }

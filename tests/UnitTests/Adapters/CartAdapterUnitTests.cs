@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Exceptions;
 
 namespace UnitTests.Adapters
 {
@@ -34,7 +35,8 @@ namespace UnitTests.Adapters
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(req =>
-                        req.Method == HttpMethod.Delete && req.RequestUri.ToString() == $"https://fakecartservice.com/cart/{cartId}"),
+                        req.Method == HttpMethod.Delete && 
+                        req.RequestUri != null && req.RequestUri.ToString() == $"https://fakecartservice.com/cart/{cartId}"),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -57,7 +59,8 @@ namespace UnitTests.Adapters
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(req =>
-                        req.Method == HttpMethod.Delete && req.RequestUri.ToString() == $"https://fakecartservice.com/cart/{cartId}"),
+                        req.Method == HttpMethod.Delete &&
+                        req.RequestUri != null && req.RequestUri.ToString() == $"https://fakecartservice.com/cart/{cartId}"),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -84,7 +87,7 @@ namespace UnitTests.Adapters
                 .ThrowsAsync(new HttpRequestException("Request failed"));
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => _cartAdapter.DeleteCartByIdAsync(cartId));
+            var exception = await Assert.ThrowsAsync<CartDeletionException>(() => _cartAdapter.DeleteCartByIdAsync(cartId));
             Assert.Contains("Error occurred while sending HTTP request", exception.Message);
         }
 
@@ -101,7 +104,7 @@ namespace UnitTests.Adapters
                 .ThrowsAsync(new TimeoutException("Request timed out"));
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => _cartAdapter.DeleteCartByIdAsync(cartId));
+            var exception = await Assert.ThrowsAsync<CartDeletionException>(() => _cartAdapter.DeleteCartByIdAsync(cartId));
             Assert.Contains("Request to delete cart with ID", exception.Message);
         }
 
@@ -118,7 +121,7 @@ namespace UnitTests.Adapters
                 .ThrowsAsync(new Exception("Unexpected error"));
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => _cartAdapter.DeleteCartByIdAsync(cartId));
+            var exception = await Assert.ThrowsAsync<CartDeletionException>(() => _cartAdapter.DeleteCartByIdAsync(cartId));
             Assert.Contains("An unexpected error occurred", exception.Message);
         }
     }

@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces.ExternalServices;
+﻿using Domain.Exceptions;
+using Domain.Interfaces.ExternalServices;
 using Microsoft.Extensions.Logging;
 
 namespace ExternalServices.Adapters
@@ -35,17 +36,17 @@ namespace ExternalServices.Adapters
             catch (HttpRequestException httpEx)
             {
                 _logger.LogError(httpEx, "Error occurred while sending HTTP request to delete cart with ID {CartId}.", cartId);
-                throw new Exception($"Error occurred while sending HTTP request to delete cart with ID {cartId}.", httpEx);
+                throw new CartDeletionException($"Error occurred while sending HTTP request to delete cart with ID {cartId}.", httpEx);
             }
             catch (TimeoutException timeoutEx)
             {
                 _logger.LogError(timeoutEx, "Request to delete cart with ID {CartId} timed out.", cartId);
-                throw new Exception($"Request to delete cart with ID {cartId} timed out.", timeoutEx);
+                throw new CartDeletionException($"Request to delete cart with ID {cartId} timed out.", timeoutEx);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An unexpected error occurred while trying to delete cart with ID {CartId}.", cartId);
-                throw new Exception($"An unexpected error occurred while trying to delete cart with ID {cartId}.", ex);
+                throw new CartDeletionException($"An unexpected error occurred while trying to delete cart with ID {cartId}.", ex);
             }
         }
     }

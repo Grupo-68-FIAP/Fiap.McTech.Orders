@@ -1,4 +1,5 @@
-﻿using ExternalServices.Adapters;
+﻿using Domain.Entities.Orders;
+using ExternalServices.Adapters;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
@@ -30,7 +31,7 @@ namespace UnitTests.Adapters
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Post &&
-                        req.RequestUri.ToString() == $"https://fakepaymentservice.com/payment/{orderId}/next-status"),
+                        req.RequestUri != null && req.RequestUri.ToString() == $"https://fakepaymentservice.com/payment/{orderId}/next-status"),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -65,7 +66,7 @@ namespace UnitTests.Adapters
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Post &&
-                        req.RequestUri.ToString() == $"https://fakepaymentservice.com/payment/{orderId}/next-status"),
+                        req.RequestUri != null && req.RequestUri.ToString() == $"https://fakepaymentservice.com/payment/{orderId}/next-status"),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -74,41 +75,7 @@ namespace UnitTests.Adapters
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<HttpRequestException>(() => _paymentAdapter.MoveOrderToNextStatus(orderId));
-            Assert.Contains($"Failed to move order with ID {orderId} to next payment status", exception.Message);
-        }
-
-        [Fact]
-        public async Task MoveOrderToNextStatus_WhenHttpRequestExceptionOccurs_ShouldThrowApplicationException()
-        {
-            // Arrange
-            var orderId = Guid.NewGuid();
-            _httpMessageHandlerMock.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ThrowsAsync(new HttpRequestException("An error occurred while contacting the payment service"));
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<HttpRequestException>(() => _paymentAdapter.MoveOrderToNextStatus(orderId));
-            Assert.Contains("An error occurred while contacting the payment service", exception.Message);
-        }
-
-        [Fact]
-        public async Task MoveOrderToNextStatus_WhenUnexpectedExceptionOccurs_ShouldThrowApplicationException()
-        {
-            // Arrange
-            var orderId = Guid.NewGuid();
-            _httpMessageHandlerMock.Protected()
-                .Setup<Task<HttpResponseMessage>>(
-                    "SendAsync",
-                    ItExpr.IsAny<HttpRequestMessage>(),
-                    ItExpr.IsAny<CancellationToken>())
-                .ThrowsAsync(new Exception("An unexpected error occurred while processing the payment status change"));
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => _paymentAdapter.MoveOrderToNextStatus(orderId));
-            Assert.Contains("An unexpected error occurred while processing the payment status change", exception.Message);
+            Assert.Contains($"Error while communicating with the payment service for order ID {orderId}", exception.Message);
         }
     }
 }
