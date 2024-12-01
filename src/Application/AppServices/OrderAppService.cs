@@ -17,7 +17,7 @@ namespace AppServices.Orders
         private readonly IOrderRepository _orderRepository;
         private readonly ICartAdapter _cartAdapter;
         private readonly IPaymentAdapter _paymentAdapter;
-        
+
         private readonly IMapper _mapper;
 
         public OrderAppService(
@@ -70,8 +70,24 @@ namespace AppServices.Orders
 
             var createdOrder = await _orderRepository.AddAsync(order);
 
-            _logger.LogInformation("Order created successfully with ID {OrderId}. Cart with ID {CartId} deleted after order creation.", 
+            _logger.LogInformation("Order created successfully with ID {OrderId}. Cart with ID {CartId} deleted after order creation.",
                 createdOrder.Id, request.CartId);
+
+            await _paymentAdapter.GeneratePayment(
+                orderId: createdOrder.Id,
+                model: new PaymentRequest
+                {
+                    OrderId = createdOrder.Id,
+                    TotalAmount = createdOrder.TotalAmount,
+                    Client = new PaymentRequest.ClientRequest
+                    {
+                        Name = "Teste",
+                        Cpf = "00000000019",
+                        Email = "teste@teste.com",
+                        Id = request.ClientId
+                    }
+                }
+            );
 
             _ = _cartAdapter.DeleteCartByIdAsync(request.CartId);
 

@@ -31,7 +31,7 @@ namespace UnitTests.Adapters
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Post &&
-                        req.RequestUri != null && req.RequestUri.ToString() == $"https://fakepaymentservice.com/payment/{orderId}/next-status"),
+                        req.RequestUri != null && req.RequestUri.ToString() == $"https://fakepaymentservice.com/payment/{orderId}/checkout"),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
@@ -66,7 +66,7 @@ namespace UnitTests.Adapters
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(req =>
                         req.Method == HttpMethod.Post &&
-                        req.RequestUri != null && req.RequestUri.ToString() == $"https://fakepaymentservice.com/payment/{orderId}/next-status"),
+                        req.RequestUri != null && req.RequestUri.ToString() == $"https://fakepaymentservice.com/payment/{orderId}/checkout"),
                     ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
