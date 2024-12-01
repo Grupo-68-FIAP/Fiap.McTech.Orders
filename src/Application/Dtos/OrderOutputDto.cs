@@ -1,7 +1,9 @@
 ﻿using Domain.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Application.Dtos.Orders
 {
+    [ExcludeFromCodeCoverage]
 	public class OrderOutputDto
     {
 		public Guid Id { get; set; }

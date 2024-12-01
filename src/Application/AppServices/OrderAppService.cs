@@ -64,27 +64,18 @@ namespace AppServices.Orders
                 throw new InvalidCartIdException("Cart ID cannot be empty."); 
             }
 
-
             _logger.LogInformation("Creating order for cart with ID {CartId}.", request.CartId);
 
-            try
-            {
-                var order = _mapper.Map<Order>(request);
+            var order = _mapper.Map<Order>(request);
 
-                var createdOrder = await _orderRepository.AddAsync(order);
-                _logger.LogInformation("Order created successfully with ID {OrderId}.", createdOrder.Id);
+            var createdOrder = await _orderRepository.AddAsync(order);
+            _logger.LogInformation("Order created successfully with ID {OrderId}.", createdOrder.Id);
 
-                _ = _cartAdapter.DeleteCartByIdAsync(request.CartId);
+            _ = _cartAdapter.DeleteCartByIdAsync(request.CartId);
 
-                _logger.LogInformation("Cart with ID {CartId} deleted after order creation.", request.CartId);
+            _logger.LogInformation("Cart with ID {CartId} deleted after order creation.", request.CartId);
 
-                return _mapper.Map<OrderOutputDto>(createdOrder);
-            }
-            catch (InvalidCartIdException ex)
-            {
-                _logger.LogError(ex, "Error creating order for cart with ID {CartId}.", request.CartId);
-                throw;
-            }
+            return _mapper.Map<OrderOutputDto>(createdOrder);
         }
 
         public async Task DeleteOrderAsync(Guid orderId)
@@ -141,30 +132,22 @@ namespace AppServices.Orders
             var originalOrder = await _orderRepository.GetByIdAsync(id)
                 ?? throw new EntityNotFoundException($"Order with ID {id} not found. Update aborted.");
 
-            try
+            originalOrder.SendToNextStatus();
+            await _orderRepository.UpdateAsync(originalOrder);
+
+            _logger.LogInformation("Order with ID {OrderId} moved to next status successfully.", id);
+
+            var paymentStatusUpdate = await _paymentAdapter.MoveOrderToNextStatus(id);
+            if (!paymentStatusUpdate)
             {
-                originalOrder.SendToNextStatus();
-                await _orderRepository.UpdateAsync(originalOrder);
-
-                _logger.LogInformation("Order with ID {OrderId} moved to next status successfully.", id);
-
-                var paymentStatusUpdate = await _paymentAdapter.MoveOrderToNextStatus(id);
-                if (!paymentStatusUpdate)
-                {
-                    _logger.LogWarning("Failed to update payment status for order ID {OrderId}.", id);
-                    throw new PaymentStatusUpdateException($"Payment status update failed for order ID {id}. Status transition incomplete.");
-                }
-
-                var updatedOrder = await _orderRepository.GetOrderByIdAsync(id);
-                _logger.LogInformation("Order with ID {OrderId} retrieved after status update.", id);
-
-                return _mapper.Map<OrderOutputDto>(updatedOrder);
+                _logger.LogWarning("Failed to update payment status for order ID {OrderId}.", id);
+                throw new PaymentStatusUpdateException($"Payment status update failed for order ID {id}. Status transition incomplete.");
             }
-            catch (PaymentStatusUpdateException ex)
-            {
-                _logger.LogError(ex, "Error moving order with ID {OrderId} to next status.", id);
-                throw;
-            }
+
+            var updatedOrder = await _orderRepository.GetOrderByIdAsync(id);
+            _logger.LogInformation("Order with ID {OrderId} retrieved after status update.", id);
+
+            return _mapper.Map<OrderOutputDto>(updatedOrder);
         }
 
         public async Task<List<OrderOutputDto>> GetCurrrentOrders()
