@@ -1,25 +1,38 @@
+using CrossCutting.Ioc;
+using CrossCutting.Ioc.Infra;
+using CrossCutting.Ioc.Mappers;
+using WebApi.Configurations;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddJwtBearerAuthentication();
+builder.Services.AddSwagger();
+
+// AutoMapper configuration
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.RegisterMappings();
+
+builder.Services.RegisterServices(builder.Configuration);
+
+// Cors configuration
+builder.Services.AddCors(options =>
+{
+    var allowOrigins = builder.Configuration.GetValue<string>("ALLOW_ORIGINS") ?? "*";
+    options.AddPolicy("CorsConfig", builder => builder.WithOrigins(allowOrigins.Split(';')).AllowAnyMethod().AllowAnyHeader());
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+using var scope = app.Services.CreateScope();
+scope.McTechDatabaseInitialize();
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
+app.UseSwaggerV3();
+app.UseCors("CorsConfig"); 
+app.UseAuth();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

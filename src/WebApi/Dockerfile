@@ -6,23 +6,25 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-
 # Esta fase é usada para compilar o projeto de serviço
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/WebApi/WebApi.csproj", "src/WebApi/"]
-COPY ["src/Application/Application.csproj", "src/Application/"]
-COPY ["src/Domain/Domain.csproj", "src/Domain/"]
-RUN dotnet restore "./src/WebApi/WebApi.csproj"
+COPY ["src/WebApi", "WebApi"]
+COPY ["src/Application", "Application"]
+COPY ["src/CrossCutting.Ioc", "CrossCutting.Ioc"]
+COPY ["src/ExternalServices", "ExternalServices"]
+COPY ["src/Infra", "Infra"]
+COPY ["src/Domain", "Domain"]
+RUN dotnet restore "./WebApi/WebApi.csproj"
 COPY . .
-WORKDIR "/src/src/WebApi"
-RUN dotnet build "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/WebApi"
+RUN dotnet build "./WebApi.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
 # Esta fase é usada para publicar o projeto de serviço a ser copiado para a fase final
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./WebApi.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
 # Esta fase é usada na produção ou quando executada no VS no modo normal (padrão quando não está usando a configuração de Depuração)
 FROM base AS final

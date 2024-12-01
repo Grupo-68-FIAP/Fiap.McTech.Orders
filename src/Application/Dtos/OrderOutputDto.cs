@@ -1,12 +1,14 @@
 ﻿using Domain.Enums;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Application.Dtos.Orders
 {
+    [ExcludeFromCodeCoverage]
 	public class OrderOutputDto
     {
 		public Guid Id { get; set; }
 		public Guid? ClientId { get; set; }
-		public string? ClientName { get; set; }
+		public string ClientName { get; set; }
 		public decimal TotalAmount { get; set; }
 		public OrderStatus Status { get; set; }
 		public List<Item> Items { get; set; } = new();

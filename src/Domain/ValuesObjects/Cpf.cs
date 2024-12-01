@@ -34,7 +34,7 @@ namespace Domain.ValuesObjects
         public override string ToString() => Document + (IsValid() ? "" : "<invalid>");
 
         /// <inheritdoc/>
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             if (obj is string)
                 return Equals(obj, Document);
