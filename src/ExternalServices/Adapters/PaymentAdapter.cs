@@ -20,15 +20,10 @@ namespace ExternalServices.Adapters
             _logger = logger;
         }
 
-        public async Task<bool> GeneratePayment(Guid orderId, PaymentRequest model)
+        public async Task GeneratePayment(Guid orderId, PaymentRequest model)
         {
-            _logger.LogInformation("Attempting to create payment order with ID {OrderId}.", orderId);
-
             if (orderId == Guid.Empty)
-            {
-                _logger.LogWarning("Invalid Order ID provided: {OrderId}.", orderId);
                 throw new ArgumentException("Order ID cannot be empty.", nameof(orderId));
-            }
 
             try
             {
@@ -39,24 +34,11 @@ namespace ExternalServices.Adapters
                 var response = await _httpClient.PostAsync($"{_paymentServiceBaseUrl}/api/GenerateQRCode/{orderId}", content);
 
                 if (!response.IsSuccessStatusCode)
-                {
-                    _logger.LogError("Failed generate payment for order {OrderId}. Status code: {StatusCode}.", orderId, response.StatusCode);
                     throw new HttpRequestException($"Failed generate payment for order {orderId}. Status code: {response.StatusCode}");
-                }
-
-                _logger.LogInformation("Payment created for Order with ID {OrderId}.", orderId);
-
-                return true;
-            }
-            catch (HttpRequestException httpEx)
-            {
-                _logger.LogError(httpEx, "Error while communicating with the payment service for order ID {OrderId}.", orderId);
-                throw new HttpRequestException($"Error while communicating with the payment service for order ID {orderId}.", httpEx);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error while processing order ID {OrderId} for generate new payment.", orderId);
-                throw new Exception($"Unexpected error occurred while processing order ID {orderId} for generate new payment.", ex);
+                throw new Exception($"Error occurred while processing order ID {orderId} for generate new payment.", ex);
             }
         }
 

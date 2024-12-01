@@ -6,7 +6,7 @@ namespace Domain.Interfaces.ExternalServices
     {
         Task<bool> MoveOrderToNextStatus(Guid orderId);
 
-        Task<bool> GeneratePayment(Guid orderId, PaymentRequest model);
+        Task GeneratePayment(Guid orderId, PaymentRequest model);
     }
 
     public class PaymentRequest
