@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces.ExternalServices;
+﻿using Domain.Exceptions;
+using Domain.Interfaces.ExternalServices;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -38,7 +39,7 @@ namespace ExternalServices.Adapters
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error occurred while processing order ID {orderId} for generate new payment.", ex);
+                throw new PaymentStatusUpdateException($"Error occurred while processing order ID {orderId} for generate new payment.", ex);
             }
         }
 
