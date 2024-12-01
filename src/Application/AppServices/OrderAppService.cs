@@ -61,19 +61,19 @@ namespace AppServices.Orders
             if (request.CartId == Guid.Empty)
             {
                 _logger.LogWarning("Invalid Cart ID provided: {CartId}.", request.CartId);
-                throw new InvalidCartIdException("Cart ID cannot be empty."); 
+                throw new InvalidCartIdException("Cart ID cannot be empty.");
             }
 
-            _logger.LogInformation("Creating order for cart with ID {CartId}.", request.CartId);
+            _logger.LogInformation("Creating order for cart with ID {CartId}...", request.CartId);
 
             var order = _mapper.Map<Order>(request);
 
             var createdOrder = await _orderRepository.AddAsync(order);
-            _logger.LogInformation("Order created successfully with ID {OrderId}.", createdOrder.Id);
+
+            _logger.LogInformation("Order created successfully with ID {OrderId}. Cart with ID {CartId} deleted after order creation.", 
+                createdOrder.Id, request.CartId);
 
             _ = _cartAdapter.DeleteCartByIdAsync(request.CartId);
-
-            _logger.LogInformation("Cart with ID {CartId} deleted after order creation.", request.CartId);
 
             return _mapper.Map<OrderOutputDto>(createdOrder);
         }

@@ -6,7 +6,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace CrossCutting.Ioc.Mappers.Profiles
 {
-    //TODO - VALIDAR MAPEAMENTO
     [ExcludeFromCodeCoverage]
     public class OrderProfile : Profile
     {
