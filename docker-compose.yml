@@ -1,6 +1,23 @@
 services:
-  webapi:
-    image: ${DOCKER_REGISTRY-}webapi
+  fiap.mctech.api.order:
+    depends_on:
+      - sqlserver
+      - keycloak
+    image: ${DOCKER_REGISTRY-}mctech/orders-api
     build:
       context: .
       dockerfile: src/WebApi/Dockerfile
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:latest
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:22.0
+    restart: always
+    command: start-dev
+    environment:
+      KC_HOSTNAME: keycloak

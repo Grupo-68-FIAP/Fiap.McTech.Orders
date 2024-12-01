@@ -1,0 +1,48 @@
+{
+    // Use IntelliSense to find out which attributes exist for C# debugging
+    // Use hover for the description of the existing attributes
+    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "UI - Presentation - API",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build-api",
+        "program": "${workspaceFolder}/src/WebApi/bin/Debug/net6.0/WebApi.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/src/WebApi",
+        "stopAtEntry": false,
+        "internalConsoleOptions": "openOnSessionStart",
+        "launchBrowser": {
+          "enabled": true,
+          "args": "${auto-detect-url}",
+          "windows": {
+            "command": "cmd.exe",
+            "args": "/C start ${auto-detect-url}"
+          },
+          "osx": {
+            "command": "open"
+          },
+          "linux": {
+            "command": "xdg-open"
+          },
+          "protocol": "http"
+        },
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Development",
+          "SA_PASSWORD":"pws4mctech!",
+          "OPENID_AUTHORITY":"http://keycloak:8080/realms/McTech",
+          "OPENID_AUDIENCE":"mctech-api",
+          "KEYCLOAK_ADMIN":"admin",
+          "KEYCLOAK_ADMIN_PASSWORD":"admin",
+          "MCTECH_CART_SERVICE":"",
+          "MCTECH_PAYMENT_SERVICE":"",
+          "CONNECTION_STRING":"Server=localhost;Database=mctech_order;Integrated Security=True;"
+        },
+        "sourceFileMap": {
+          "/Views": "${workspaceFolder}/Views"
+        }
+      },
+    ]
+  }

@@ -2,12 +2,14 @@
 using Domain.Exceptions;
 using Infra.EntityMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Infra.Context
 {
+    [ExcludeFromCodeCoverage]
     public class DataContext : DbContext
     {
-        public DbSet<Order>? Orders { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         public DataContext() : base() { }
 

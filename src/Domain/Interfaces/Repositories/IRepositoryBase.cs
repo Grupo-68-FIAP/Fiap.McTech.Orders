@@ -32,14 +32,14 @@
         /// </summary>
         /// <param name="id">The unique identifier of the entity.</param>
         /// <returns>The entity with the specified identifier, if found; otherwise, null.</returns>
-        TEntity? GetById(Guid id);
+        TEntity GetById(Guid id);
 
         /// <summary>
         /// Asynchronously retrieves an entity by its unique identifier.
         /// </summary>
         /// <param name="id">The unique identifier of the entity.</param>
         /// <returns>A task representing the asynchronous operation, containing the entity with the specified identifier if found; otherwise, null.</returns>
-        Task<TEntity?> GetByIdAsync(Guid id);
+        Task<TEntity> GetByIdAsync(Guid id);
 
         /// <summary>
         /// Asynchronously retrieves all entities from the repository.

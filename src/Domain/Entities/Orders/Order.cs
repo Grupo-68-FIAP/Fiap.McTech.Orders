@@ -9,7 +9,7 @@ namespace Domain.Entities.Orders
         {
             ClientId = clientId;
             TotalAmount = totalAmount;
-            Status = OrderStatus.None;
+            Status = OrderStatus.WaitPayment;
             Items = new List<Item>();
         }
 
