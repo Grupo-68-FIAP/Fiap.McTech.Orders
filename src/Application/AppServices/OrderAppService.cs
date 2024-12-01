@@ -142,9 +142,6 @@ namespace AppServices.Orders
                 throw new ArgumentException("Order ID cannot be empty.", nameof(id));
             }
 
-            _logger.LogInformation("Attempting to move order with ID {OrderId} to next status.", id);
-
-
             var originalOrder = await _orderRepository.GetByIdAsync(id)
                 ?? throw new EntityNotFoundException($"Order with ID {id} not found. Update aborted.");
 
