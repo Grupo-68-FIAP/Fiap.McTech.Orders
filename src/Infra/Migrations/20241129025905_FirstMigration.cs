@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
-
 namespace Infra.Migrations
 {
+    [ExcludeFromCodeCoverage]
     public partial class FirstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
