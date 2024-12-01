@@ -1,6 +1,9 @@
-﻿using Domain.Interfaces.ExternalServices;
+﻿using Domain.Exceptions;
+using Domain.Interfaces.ExternalServices;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.Json;
 
 namespace ExternalServices.Adapters
 {
@@ -18,6 +21,28 @@ namespace ExternalServices.Adapters
             _logger = logger;
         }
 
+        public async Task GeneratePayment(Guid orderId, PaymentRequest model)
+        {
+            if (orderId == Guid.Empty)
+                throw new ArgumentException("Order ID cannot be empty.", nameof(orderId));
+
+            try
+            {
+                string json = JsonSerializer.Serialize(model);
+
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync($"{_paymentServiceBaseUrl}/api/GenerateQRCode/{orderId}", content);
+
+                if (!response.IsSuccessStatusCode)
+                    throw new HttpRequestException($"Failed generate payment for order {orderId}. Status code: {response.StatusCode}");
+            }
+            catch (Exception ex)
+            {
+                throw new PaymentStatusUpdateException($"Error occurred while processing order ID {orderId} for generate new payment.", ex);
+            }
+        }
+
         public async Task<bool> MoveOrderToNextStatus(Guid orderId)
         {
             _logger.LogInformation("Attempting to move order with ID {OrderId} to next payment status.", orderId);
@@ -30,7 +55,8 @@ namespace ExternalServices.Adapters
 
             try
             {
-                var response = await _httpClient.PostAsync($"{_paymentServiceBaseUrl}/payment/{orderId}/next-status", null);
+                HttpContent content = new StringContent("Completo", Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync($"{_paymentServiceBaseUrl}/payment/{orderId}/checkout", content);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -40,7 +66,7 @@ namespace ExternalServices.Adapters
 
                 _logger.LogInformation("Order with ID {OrderId} moved to next payment status successfully.", orderId);
 
-                return true; 
+                return true;
             }
             catch (HttpRequestException httpEx)
             {
