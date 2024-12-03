@@ -40,10 +40,10 @@ namespace Fiap.McTech.UnitTests.Utils
         {
             // Arrange
             Type Type = value.GetType();
-            FieldInfo FieldInfo = Type.GetField(value.ToString());
+            FieldInfo? fieldInfo = Type.GetField(value.ToString());
             
             // Act
-            var attribute = FieldInfo.GetCustomAttributes(typeof(AlternateValueAttribute), false)
+            var attribute = fieldInfo?.GetCustomAttributes(typeof(AlternateValueAttribute), false)
                 .FirstOrDefault() as AlternateValueAttribute;
 
             // Assert
