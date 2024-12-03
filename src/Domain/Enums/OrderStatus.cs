@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Domain.Utils.Attributes;
+using System.ComponentModel;
 
 namespace Domain.Enums
 {
