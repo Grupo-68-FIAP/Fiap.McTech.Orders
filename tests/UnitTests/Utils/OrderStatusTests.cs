@@ -1,5 +1,5 @@
-using System.ComponentModel;
 using Domain.Enums;
+using Domain.Utils.Extensions;
 
 namespace Fiap.McTech.UnitTests.Utils
 {
@@ -16,7 +16,7 @@ namespace Fiap.McTech.UnitTests.Utils
         public void OrderStatus_ShouldHaveCorrectDescriptions(OrderStatus status, string expectedDescription)
         {
             // Act
-            var description = status.GetDescription();
+            var description = status.ToDescription();
 
             // Assert
             Assert.Equal(expectedDescription, description);
@@ -50,30 +50,6 @@ namespace Fiap.McTech.UnitTests.Utils
 
             // Assert
             Assert.Equal(-1, status);
-        }
-    }
-
-    public static class EnumExtensions
-    {
-        public static string GetDescription(this Enum value)
-        {
-            var fieldInfo = value.GetType().GetField(value.ToString());
-            var attribute = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false)
-                                      .FirstOrDefault() as DescriptionAttribute;
-            return attribute?.Description ?? value.ToString();
-        }
-
-        public static int GetFromDescription(string description, Type enumType)
-        {
-            foreach (var field in enumType.GetFields())
-            {
-                var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-                if (attribute != null && attribute.Description.Equals(description, StringComparison.OrdinalIgnoreCase))
-                {
-                    return (int)field.GetValue(null);
-                }
-            }
-            return -1;
         }
     }
 }
