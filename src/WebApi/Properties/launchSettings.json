@@ -5,7 +5,6 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "CONNECTION_STRING": "Server=localhost,1433;Initial Catalog=mctech_order;User Id=sa;Password=pws4mctech!;TrustServerCertificate=true;",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SA_PASSWORD": "pws4mctech!",
         "OPENID_AUTHORITY": "http//keycloak:8080/realms/McTech",
